@@ -53,12 +53,12 @@ function setupMethods (soljson) {
   }
 
   var compileJSONMulti = null;
-  if ('x_compileJSONMulti' in soljson) {
+  if ('_compileJSONMulti' in soljson) {
     compileJSONMulti = soljson.cwrap('compileJSONMulti', 'string', ['string', 'number']);
   }
 
   var compileJSONCallback = null;
-  if ('x_compileJSONCallback' in soljson) {
+  if ('_compileJSONCallback' in soljson) {
     var compileInternal = soljson.cwrap('compileJSONCallback', 'string', ['string', 'number', 'number']);
     compileJSONCallback = function (input, optimize, readCallback) {
       return runWithReadCallback(readCallback, compileInternal, [ input, optimize ]);
