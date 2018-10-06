@@ -47,20 +47,6 @@ tape('Version and license', function (t) {
 });
 
 tape('Compilation', function (t) {
-  t.test('single files can be compiled', function (st) {
-    if (!solc.supportsSingle) {
-      st.skip('Not supported by solc');
-      st.end();
-      return;
-    }
-    var output = solc.compile('contract x { function g() public {} }');
-    st.ok('contracts' in output);
-    var bytecode = getBytecode(output, '', 'x');
-    st.ok(bytecode);
-    st.ok(bytecode.length > 0);
-    st.end();
-  });
-
   t.test('single files can be compiled (using lowlevel API)', function (st) {
     if (typeof solc.lowlevel.compileSingle !== 'function') {
       st.skip('Low-level compileSingle interface not implemented by this compiler version.');
@@ -76,12 +62,12 @@ tape('Compilation', function (t) {
   });
 
   t.test('invalid source code fails properly', function (st) {
-    if (!solc.supportsSingle) {
-      st.skip('Not supported by solc');
+    if (typeof solc.lowlevel.compileSingle !== 'function') {
+      st.skip('Low-level compileSingle interface not implemented by this compiler version.');
       st.end();
       return;
     }
-    var output = solc.compile('contract x { this is an invalid contract }');
+    var output = JSON.parse(solc.lowlevel.compileSingle('contract x { this is an invalid contract }'));
     if (semver.lt(solc.semver(), '0.1.4')) {
       st.ok(output.error.indexOf('Parser error: Expected identifier') !== -1);
       st.end();
