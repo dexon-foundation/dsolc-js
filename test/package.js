@@ -188,20 +188,15 @@ tape('Compilation', function (t) {
       throw new Error('Could not implement this interface properly...');
     }
     st.throws(function () {
-      solc.compile({sources: input}, 0, findImports);
+      solc.compileStandardWrapper(JSON.stringify({sources: input}), 0, findImports);
     }, /^Error: Could not implement this interface properly.../);
     st.end();
   });
 
   t.test('lazy-loading callback fails properly (with invalid callback)', function (st) {
-    if (semver.lt(solc.semver(), '0.2.1')) {
-      st.skip('Not supported by solc <0.2.1');
-      st.end();
-      return;
-    }
-
-    if (!solc.supportsImportCallback) {
-      st.skip('Not supported by solc');
+    // Introduced in 0.2.1
+    if (typeof solc.lowlevel.compileCallback !== 'function') {
+      st.skip('Low-level compileCallback interface not implemented by this compiler version.');
       st.end();
       return;
     }
@@ -210,7 +205,7 @@ tape('Compilation', function (t) {
       'cont.sol': 'import "lib.sol"; contract x { function g() public { L.f(); } }'
     };
     st.throws(function () {
-      solc.compile({sources: input}, 0, "this isn't a callback");
+      solc.compileStandardWrapper(JSON.stringify({sources: input}), 0, "this isn't a callback");
     }, /Invalid callback specified./);
     st.end();
   });
@@ -231,7 +226,7 @@ tape('Compilation', function (t) {
     var input = {
       'cont.sol': 'import "lib.sol"; contract x { function g() public { L.f(); } }'
     };
-    var output = solc.compile({sources: input}, 0);
+    var output = JSON.parse(solc.compileStandard({sources: input}, 0));
     st.plan(3);
     st.ok('errors' in output);
     // Check if the ParserError exists, but allow others too
