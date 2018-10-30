@@ -217,6 +217,10 @@ function setupMethods (soljson) {
       compileStandard: compileStandard
     },
     compile: compileStandardWrapper,
+
+    compileStandard: compileStandardWrapper,
+    compileStandardWrapper: compileStandardWrapper,
+
     // Loads the compiler of the given version from the github repository
     // instead of from the local filesystem.
     loadRemoteVersion: function (versionString, cb) {

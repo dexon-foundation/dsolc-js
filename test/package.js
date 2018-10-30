@@ -61,7 +61,7 @@ tape('Compilation', function (t) {
     st.end();
   });
 
-  t.test('invalid source code fails properly', function (st) {
+  t.test('invalid source code fails properly (using lowlevel API)', function (st) {
     if (typeof solc.lowlevel.compileSingle !== 'function') {
       st.skip('Low-level compileSingle interface not implemented by this compiler version.');
       st.end();
@@ -93,34 +93,8 @@ tape('Compilation', function (t) {
     st.end();
   });
 
-  t.test('multiple files can be compiled', function (st) {
-    if (semver.lt(solc.semver(), '0.1.6')) {
-      st.skip('Not supported by solc <0.1.6');
-      st.end();
-      return;
-    }
-
-    if (!solc.supportsMulti) {
-      st.skip('Not supported by solc');
-      st.end();
-      return;
-    }
-
-    var input = {
-      'lib.sol': 'library L { function f() public returns (uint) { return 7; } }',
-      'cont.sol': 'import "lib.sol"; contract x { function g() public { L.f(); } }'
-    };
-    var output = solc.compile({sources: input});
-    var x = getBytecode(output, 'cont.sol', 'x');
-    st.ok(x);
-    st.ok(x.length > 0);
-    var L = getBytecode(output, 'lib.sol', 'L');
-    st.ok(L);
-    st.ok(L.length > 0);
-    st.end();
-  });
-
   t.test('multiple files can be compiled (using lowlevel API)', function (st) {
+    // Introduced in 0.1.6
     if (typeof solc.lowlevel.compileMulti !== 'function') {
       st.skip('Low-level compileMulti interface not implemented by this compiler version.');
       st.end();
@@ -141,40 +115,8 @@ tape('Compilation', function (t) {
     st.end();
   });
 
-  t.test('lazy-loading callback works', function (st) {
-    if (semver.lt(solc.semver(), '0.2.1')) {
-      st.skip('Not supported by solc <0.2.1');
-      st.end();
-      return;
-    }
-
-    if (!solc.supportsImportCallback) {
-      st.skip('Not supported by solc');
-      st.end();
-      return;
-    }
-
-    var input = {
-      'cont.sol': 'import "lib.sol"; contract x { function g() public { L.f(); } }'
-    };
-    function findImports (path) {
-      if (path === 'lib.sol') {
-        return { contents: 'library L { function f() public returns (uint) { return 7; } }' };
-      } else {
-        return { error: 'File not found' };
-      }
-    }
-    var output = solc.compile({sources: input}, 0, findImports);
-    var x = getBytecode(output, 'cont.sol', 'x');
-    var L = getBytecode(output, 'lib.sol', 'L');
-    st.ok(x);
-    st.ok(x.length > 0);
-    st.ok(L);
-    st.ok(L.length > 0);
-    st.end();
-  });
-
   t.test('lazy-loading callback works (using lowlevel API)', function (st) {
+    // Introduced in 0.2.1
     if (typeof solc.lowlevel.compileCallback !== 'function') {
       st.skip('Low-level compileCallback interface not implemented by this compiler version.');
       st.end();
@@ -201,15 +143,10 @@ tape('Compilation', function (t) {
     st.end();
   });
 
-  t.test('lazy-loading callback works (with file not found)', function (st) {
-    if (semver.lt(solc.semver(), '0.2.1')) {
-      st.skip('Not supported by solc <0.2.1');
-      st.end();
-      return;
-    }
-
-    if (!solc.supportsImportCallback) {
-      st.skip('Not supported by solc');
+  t.test('lazy-loading callback works (with file not found) (using lowlevel API)', function (st) {
+    // Introduced in 0.2.1
+    if (typeof solc.lowlevel.compileCallback !== 'function') {
+      st.skip('Low-level compileCallback interface not implemented by this compiler version.');
       st.end();
       return;
     }
@@ -220,7 +157,7 @@ tape('Compilation', function (t) {
     function findImports (path) {
       return { error: 'File not found' };
     }
-    var output = solc.compile({sources: input}, 0, findImports);
+    var output = JSON.parse(solc.lowlevel.compileCallback(JSON.stringify({sources: input}), 0, findImports));
     st.plan(3);
     st.ok('errors' in output);
     // Check if the ParserError exists, but allow others too
@@ -236,15 +173,10 @@ tape('Compilation', function (t) {
     st.end();
   });
 
-  t.test('lazy-loading callback works (with exception)', function (st) {
-    if (semver.lt(solc.semver(), '0.2.1')) {
-      st.skip('Not supported by solc <0.2.1');
-      st.end();
-      return;
-    }
-
-    if (!solc.supportsImportCallback) {
-      st.skip('Not supported by solc');
+  t.test('lazy-loading callback works (with exception) (using lowlevel API)', function (st) {
+    // Introduced in 0.2.1
+    if (typeof solc.lowlevel.compileCallback !== 'function') {
+      st.skip('Low-level compileCallback interface not implemented by this compiler version.');
       st.end();
       return;
     }
