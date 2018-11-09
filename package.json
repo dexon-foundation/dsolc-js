@@ -16,9 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethereum/solc-js.git"
+    "url": "git+https://github.com/dexon-foundation/dsolc-js.git"
   },
   "keywords": [
+    "dexon",
     "ethereum",
     "solidity",
     "compiler"
@@ -37,9 +38,9 @@
   "author": "chriseth",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ethereum/solc-js/issues"
+    "url": "https://github.com/dexon-foundation/dsolc-js/issues"
   },
-  "homepage": "https://github.com/ethereum/solc-js#readme",
+  "homepage": "https://github.com/dexon-foundation/dsolc-js#readme",
   "dependencies": {
     "command-exists": "^1.2.8",
     "fs-extra": "^0.30.0",
