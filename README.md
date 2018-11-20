@@ -3,35 +3,35 @@
 [![Coverage Status](https://img.shields.io/coveralls/ethereum/solc-js.svg?style=flat-square)](https://coveralls.io/r/ethereum/solc-js)
 
 # dsolc-js
-JavaScript bindings for the [Solidity compiler](https://github.com/dexon-foundation/dsolidity).
+JavaScript bindings for the [DEXON-flavored Solidity compiler](https://github.com/dexon-foundation/dsolidity).
 
-Uses the Emscripten compiled Solidity found in the [solc-bin repository](https://github.com/dexon-foundation/dsolc-bin).
+Uses the Emscripten compiled Solidity found in the [dsolc-bin repository](https://github.com/dexon-foundation/dsolc-bin).
 
 ## Node.js Usage
 
 To use the latest stable version of the Solidity compiler via Node.js you can install it via npm:
 
 ```bash
-npm install solc
+npm install @dexon-foundation/dsolc
 ```
 
 ### Usage on the Command-Line
 
-If this package is installed globally (`npm install -g solc`), a command-line tool called `solcjs` will be available.
+If this package is installed globally (`npm install -g @dexon-foundation/dsolc`), a command-line tool called `dsolcjs` will be available.
 
 To see all the supported features, execute:
 
 ```bash
-solcjs --help
+dsolcjs --help
 ```
 
-Note: this commandline interface is not compatible with `solc` provided by the Solidity compiler package and thus cannot be
+Note: this commandline interface is not compatible with `dsolc` provided by the Solidity compiler package and thus cannot be
 used in combination with an Ethereum client via the `eth.compile.solidity()` RPC method. Please refer to the
-[Solidity compiler documentation](https://solidity.readthedocs.io/) for instructions to install `solc`.
+[Solidity compiler documentation](https://solidity.readthedocs.io/) for instructions to install `dsolc`.
 
 ### Usage in Projects
 
-There are two ways to use `solc`:
+There are two ways to use `dsolc`:
 1) Through a high-level API giving a uniform interface to all compiler versions
 2) Through a low-level API giving access to all the compiler interfaces, which depend on the version of the compiler
 
@@ -49,7 +49,7 @@ of them are resolved.
 
 Example:
 ```javascript
-var solc = require('solc')
+var dsolc = require('@dexon-foundation/dsolc')
 
 var input = {
 	language: 'Solidity',
@@ -67,7 +67,7 @@ var input = {
 	}
 }
 
-var output = JSON.parse(solc.compile(JSON.stringify(input)))
+var output = JSON.parse(dsolc.compile(JSON.stringify(input)))
 
 // `output` here contains the JSON output as specified in the documentation
 for (var contractName in output.contracts['test.sol']) {
@@ -78,7 +78,7 @@ for (var contractName in output.contracts['test.sol']) {
 #### Example usage with import callback
 
 ```javascript
-var solc = require('solc')
+var dsolc = require('@dexon-foundation/dsolc')
 
 var input = {
 	language: 'Solidity',
@@ -103,7 +103,7 @@ function findImports (path) {
 		return { error: 'File not found' }
 }
 
-var output = JSON.parse(solc.compile(JSON.stringify(input), findImports))
+var output = JSON.parse(dsolc.compile(JSON.stringify(input), findImports))
 
 // `output` here contains the JSON output as specified in the documentation
 for (var contractName in output.contracts['test.sol']) {
@@ -114,17 +114,17 @@ for (var contractName in output.contracts['test.sol']) {
 #### Low-level API
 
 The low-level API is as follows:
-- `solc.lowlevel.compileSingle`: the original entry point, supports only a single file
-- `solc.lowlevel.compileMulti`: this supports multiple files, introduced in 0.1.6
-- `solc.lowlevel.compileCallback`: this supports callbacks, introduced in 0.2.1
-- `solc.lowlevel.compileStandard`: this works just like `compile` above, but is only present in compilers after (and including) 0.4.11
+- `dsolc.lowlevel.compileSingle`: the original entry point, supports only a single file
+- `dsolc.lowlevel.compileMulti`: this supports multiple files, introduced in 0.1.6
+- `dsolc.lowlevel.compileCallback`: this supports callbacks, introduced in 0.2.1
+- `dsolc.lowlevel.compileStandard`: this works just like `compile` above, but is only present in compilers after (and including) 0.4.11
 
-For examples how to use them, please refer to the README of the above mentioned solc-js releases.
+For examples how to use them, please refer to the README of the above mentioned dsolc-js releases.
 
 ### Using with Electron
 
 **Note:**
-If you are using Electron, `nodeIntegration` is on for `BrowserWindow` by default. If it is on, Electron will provide a `require` method which will not behave as expected and this may cause calls, such as `require('solc')`, to fail.
+If you are using Electron, `nodeIntegration` is on for `BrowserWindow` by default. If it is on, Electron will provide a `require` method which will not behave as expected and this may cause calls, such as `require('@dexon-foundation/dsolc')`, to fail.
 
 To turn off `nodeIntegration`, use the following:
 
@@ -138,20 +138,20 @@ new BrowserWindow({
 
 ### Using a Legacy Version
 
-In order to compile contracts using a specific version of Solidity, the `solc.loadRemoteVersion(version, callback)` method is available. This returns a new `solc` object that uses a version of the compiler specified. 
+In order to compile contracts using a specific version of Solidity, the `dsolc.loadRemoteVersion(version, callback)` method is available. This returns a new `dsolc` object that uses a version of the compiler specified. 
 
 You can also load the "binary" manually and use `setupMethods` to create the familiar wrapper functions described above:
-`var solc = solc.setupMethods(require("/my/local/soljson.js"))`.
+`var dsolc = dsolc.setupMethods(require("/my/local/soljson.js"))`.
 
 ### Using the Latest Development Snapshot
 
 By default, the npm version is only created for releases. This prevents people from deploying contracts with non-release versions because they are less stable and harder to verify. If you would like to use the latest development snapshot (at your own risk!), you may use the following example code.
 
 ```javascript
-var solc = require('solc')
+var dsolc = require('@dexon-foundation/dsolc')
 
 // getting the development snapshot
-solc.loadRemoteVersion('latest', function (err, solcSnapshot) {
+dsolc.loadRemoteVersion('latest', function (err, solcSnapshot) {
 	if (err) {
 		// An error was encountered, display and quit
 	} else {
@@ -164,12 +164,12 @@ solc.loadRemoteVersion('latest', function (err, solcSnapshot) {
 
 When using libraries, the resulting bytecode will contain placeholders for the real addresses of the referenced libraries. These have to be updated, via a process called linking, before deploying the contract.
 
-The `linker` module (`require('solc/linker')`) offers helpers to accomplish this.
+The `linker` module (`require('@dexon-foundation/dsolc/linker')`) offers helpers to accomplish this.
 
 The `linkBytecode` method provides a simple helper for linking:
 
 ```javascript
-var linker = require('solc/linker')
+var linker = require('@dexon-foundation/dsolc/linker')
 
 bytecode = linker.linkBytecode(bytecode, { 'MyLibrary': '0x123456...' })
 ```
@@ -179,7 +179,7 @@ As of Solidity 0.4.11 the compiler supports [standard JSON input and output](htt
 There is a method available in the `linker` module called `findLinkReferences` which can find such link references in bytecode produced by an older compiler:
 
 ```javascript
-var linker = require('solc/linker')
+var linker = require('@dexon-foundation/dsolc/linker')
 
 var linkReferences = linker.findLinkReferences(bytecode)
 ```
@@ -190,7 +190,7 @@ The ABI generated by Solidity versions can differ slightly, due to new features 
 
 It can be used as:
 ```javascript
-var abi = require('solc/abi')
+var abi = require('@dexon-foundation/dsolc/abi')
 
 var inputABI = [{"constant":false,"inputs":[],"name":"hello","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"}]
 var outputABI = abi.update('0.3.6', inputABI)
@@ -203,7 +203,7 @@ var outputABI = abi.update('0.3.6', inputABI)
 There is a helper available to format old JSON assembly output into a text familiar to earlier users of Remix IDE.
 
 ```
-var translate = require('solc/translate')
+var translate = require('@dexon-foundation/dsolc/translate')
 
 // assemblyJSON refers to the JSON of the given assembly and sourceCode is the source of which the assembly was generated from
 var output = translate.prettyPrintLegacyAssemblyJSON(assemblyJSON, sourceCode)

@@ -95,7 +95,7 @@ function setupMethods (soljson) {
         errors: [
           {
             'type': 'SOLCError',
-            'component': 'solcjs',
+            'component': 'dsolcjs',
             'severity': 'error',
             'message': message,
             'formattedMessage': 'Error: ' + message
