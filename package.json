@@ -1,10 +1,10 @@
 {
-  "name": "solc",
+  "name": "@dexon-foundation/dsolc",
   "version": "0.4.25",
   "description": "Solidity compiler",
   "main": "index.js",
   "bin": {
-    "solcjs": "solcjs"
+    "dsolcjs": "dsolcjs"
   },
   "scripts": {
     "lint": "semistandard",
