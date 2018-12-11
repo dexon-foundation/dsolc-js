@@ -1,7 +1,7 @@
 {
   "name": "@dexon-foundation/dsolc",
   "version": "0.5.2",
-  "description": "Solidity compiler",
+  "description": "DEXON-flavored Solidity compiler",
   "main": "index.js",
   "bin": {
     "dsolcjs": "dsolcjs"
@@ -30,8 +30,8 @@
     "linker.js",
     "smtchecker.js",
     "smtsolver.js",
-    "solcjs",
-    "soljson.js",
+    "dsolcjs",
+    "dsoljson.js",
     "translate.js",
     "wrapper.js"
   ],
